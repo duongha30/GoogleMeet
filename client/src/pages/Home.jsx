@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { v4 as uuidV4 } from 'uuid'
 import Header from '../components/Header'
@@ -6,7 +6,19 @@ import Header from '../components/Header'
 function Home() {
     const [meetingId, setMeetingId] = useState('')
     const [generatedLink, setGeneratedLink] = useState('')
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const dropdownRef = useRef(null)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
 
     const startInstantMeeting = () => {
         navigate(`/${uuidV4()}`)
@@ -37,24 +49,22 @@ function Home() {
                             meetings, Google Meet, to make it free and available for all.
                         </p>
 
-                        <div className="dropdown" style={{ display: 'inline-block' }}>
+                        <div className="dropdown" style={{ display: 'inline-block' }} ref={dropdownRef}>
                             <button
                                 className="btn btn-custom"
                                 type="button"
-                                id="dropdownMenuButton"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
+                                onClick={() => setDropdownOpen((o) => !o)}
+                                aria-expanded={dropdownOpen}
                             >
                                 <i className="fas fa-video"></i> New meeting
                             </button>
                             <div
-                                className="dropdown-menu"
+                                className={`dropdown-menu${dropdownOpen ? ' show' : ''}`}
                                 aria-labelledby="dropdownMenuButton"
                             >
                                 <button
                                     className="dropdown-item"
-                                    onClick={getShareableLink}
+                                    onClick={() => { getShareableLink(); setDropdownOpen(false) }}
                                 >
                                     <i className="fas fa-paperclip"></i> Get link to share
                                 </button>
