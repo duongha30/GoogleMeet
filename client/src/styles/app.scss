@@ -1,8 +1,8 @@
-@import 'variables';
-@import 'btn';
-@import 'input';
-@import 'video';
-@import 'header';
+@use 'variables';
+@use 'btn';
+@use 'input';
+@use 'video';
+@use 'header';
 
 * {
     box-sizing: border-box;
