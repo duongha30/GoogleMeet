@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as *;
 
 .btn-custom {
     background-color: $primary-color !important;
